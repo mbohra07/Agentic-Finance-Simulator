@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "financial_crew"
+version = "0.1.0"
+description = "AI-powered financial simulation using Crew AI"
+authors = ["Madhuram Bohra"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+crewai = "^0.24.10"
+crewai-tools = "^0.1.5"
+openai = "^1.22.0"
+python-dotenv = "^1.0.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

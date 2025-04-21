@@ -1,0 +1,178 @@
+simulate_cash_flow:
+  description: >
+    <<SYS>>
+    You are a financial simulation assistant. Always respond ONLY with the final output.
+    NEVER include prep statements like "Now I can answer", "Here's the result", or reasoning.
+    Only output structured JSON.
+    <</SYS>>
+    Simulate monthly or daily cash inflows and outflows for {user_name}, a {age}-year-old {occupation} 
+    with a starting balance of ₹{starting_balance}, over a {simulation_steps}-steps. 
+    Categories include food, rent, transport, entertainment, salary, freelance income, etc. 
+    Consider a moderate income level of ₹{income_level}.
+
+    Introduce:
+    - Emotional spending triggers like retail therapy, FOMO-driven purchases, or guilt spending.
+    - Life events such as job loss, medical emergencies, or investment windfalls.
+    - Behavior shifts due to stress, confidence, or fear (e.g., skipping savings, overcompensating after loss).
+    - Unexpected income events like surprise bonuses or birthday gifts.
+
+    The emotional_bias_agent must simulate irrational cash flow behavior on select months to test financial discipline under pressure.
+
+    Important: Total outflows in each step **must not exceed** the sum of inflows and remaining balance. 
+    Prioritize essential expenses first, and reduce/discard non-essentials (e.g., impulse_spending, entertainment) to respect this constraint.
+
+  expected_output: >
+    Return only a structured JSON object for the full {simulation_steps}-steps simulation, including all inflows, outflows, and balance details. 
+    Exclude any additional text or explanations, as this output will be parsed directly by my backend functionality.
+
+    [
+      {
+        "time_to_goal_left": 0,
+        "date": "YYYY-MM-DD",
+        "inflows": {
+          "salary": ₹,
+          "freelance": ₹,
+          "investment_return": ₹,
+          "unexpected_income": ₹
+        },
+        "outflows": {
+          "rent": ₹,
+          "groceries": ₹,
+          "transport": ₹,
+          "entertainment": ₹,
+          "impulse_spending": ₹,
+          "medical": ₹,
+          "guilt_spending": ₹,
+          "retail_therapy": ₹
+        },
+        "balance": ₹
+      },
+      ...
+    ]
+
+  agent: emotional_bias_agent
+  frequency: monthly
+  output_file: output/simulated_cashflow.json
+  retry_policy:
+    max_retries: 3
+    retry_interval: 60s
+    
+evaluate_spending:
+  description: >
+    <<SYS>>
+    You are a financial simulation assistant. Always respond ONLY with the final output.
+    NEVER include prep statements like "Now I can answer", "Here's the result", or reasoning.
+    Output must match the format shown below.
+    <</SYS>>
+    Analyze {user_name}’s cash flow simulation stored in JSON format to identify inefficient spending patterns.
+    Tailor the advice based on their occupation as a {occupation}, monthly income of ₹{income_level}, and financial goal of "{goal}".
+    Use economic principles like opportunity cost, budget allocation, and utility curves to guide the analysis.
+    Provide actionable advice that improves savings while keeping essential expenses intact.
+
+  expected_output: >
+    Provide a detailed **bullet-point** summary including:
+    1. Top 3 wasteful or low-utility discretionary expenses (mention ₹ amounts).
+    2. Overspending categories compared to benchmark values for a {occupation}.
+    3. Monthly savings rate (%) and suggested improvements to boost it.
+    4. Simple habit-change tips or automation suggestions for {user_name} to build consistent savings behavior.
+
+    💡 Format your response exactly like the example below:
+    ```
+    💡 Spending Review & Suggestions for {user_name}:
+
+    - High food delivery expenses (₹3200/month) → Suggest: Weekly cooking challenge (save ₹2000)
+    - Entertainment exceeded 15% benchmark → Tip: Cancel one subscription (save ₹500)
+    - Impulse spends on 4 occasions → Tip: 24-hour pause rule (reduce impulse purchases)
+    - Savings rate: 6% → Aim for 15% by setting up an auto-transfer to savings on salary day
+    ```
+
+  agent: spending_advisor
+  context:
+    - simulate_cash_flow
+  output_file: output/spending_review.md
+
+track_goals:
+  description: >
+    <SYS>>
+    You are a financial simulation assistant. Always respond ONLY with the final output.
+    NEVER include prep statements like "Now I can answer", "Here's the result", or reasoning.
+    Output must match the format shown below.
+    <</SYS>>
+    Evaluate {user_name}’s progress toward the financial goal: "{goal}". 
+    Use the {simulation_steps}-steps simulation data (cash flow, expenses, savings) to estimate trajectory. 
+    Tailor projections to their income of ₹{income_level}, current savings behavior, and starting balance of ₹{starting_balance}.
+  expected_output: >
+    Provide a compact financial progress summary with:
+    1. % of goal achieved so far
+    2. Projected savings by end of simulation
+    3. Estimated time to reach the goal
+    4. Personalized advice for {user_name} (e.g., cutting entertainment, boosting freelance work)
+    Format:
+    📊 Goal Progress Summary:
+    - Goal: "{goal}"
+    - Achieved: X% of goal based on the simulation
+    - Projected trajectory: ₹[expected amount] by the end of simulation
+    - Time to goal: {time_to_goal_left}
+    - Recommendations:
+      • Try earning ₹1000/month via freelancing
+      • Reduce entertainment budget by 10%
+  agent: goal_tracker
+  context:
+    - simulate_cash_flow
+    - evaluate_spending
+  output_file: output/goal_tracking.md
+  retry_policy:
+    max_retries: 3
+    retry_interval: 60s
+
+monthly_summary:
+  description: >
+    <<SYS>>
+    You are a financial simulation assistant. Always respond ONLY with the final output.
+    NEVER include prep statements like "Now I can answer", "Here's the result", or reasoning.
+    Output must match the format shown below.
+    <</SYS>>
+    Create a final summary for {user_name} ({age}, {occupation}), reviewing the entire financial simulation. 
+    Include financial outcomes, emotional behavior patterns, and progress toward the goal: "{goal}". 
+    Encourage long-term learning and motivate improvement based on the user's lifestyle and profile.
+  expected_output: >
+    Generate a markdown report for {user_name} with:
+    1. Opening balance: ₹{starting_balance} | Closing balance after the whole simulation
+    2. Total savings (₹ + %)
+    3. Summary of life events (e.g., job loss, sudden income, impulse spending)
+    4. Goal progress (✓ if achieved or ✗ if not) with % and time estimate
+    5. Key behavioral insights and suggestions for improvement
+    6. A motivational mentor message with 2–3 clear tips
+    Format:
+    ```
+    📘 Monthly Financial Summary for {user_name}
+
+    💰 Account Summary:
+    - Opening Balance: ₹{starting_balance}
+    - Closing Balance: ₹{ending_balance}
+    - Net Saved: ₹ (savings_percentage%)
+
+    🌐 Life Events:
+    - [Date]: [Event]
+
+    🎯 Goal Status:
+    - Goal: "{goal}"
+    - Achieved: X% | Time left: {time_to_goal_left}
+
+    🧠 Behavior Insights:
+    - Improved control over {top category}
+    - Impulse spending detected on [N] days
+    - Tip: [Relevant advice]
+
+    💬 Mentor Message:
+    > “Well done, {user_name}! You’re progressing well. To level up, try controlling entertainment spend and boost savings with automation.”
+    ```
+  agent: mentor_agent
+  context:
+    - simulate_cash_flow
+    - evaluate_spending
+    - track_goals
+  output_file: output/report.md
+  retry_policy:
+    max_retries: 3
+    retry_interval: 60s

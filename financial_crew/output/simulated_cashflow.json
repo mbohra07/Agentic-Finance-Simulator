@@ -1,0 +1,114 @@
+[
+  {
+    "time_to_goal_left": 0,
+    "date": "2023-02-01",
+    "inflows": {
+      "salary": 8000,
+      "freelance": 1000
+    },
+    "outflows": {
+      "rent": 5000,
+      "groceries": 2000,
+      "transport": 1000,
+      "entertainment": 1000
+    },
+    "balance": 3000
+  },
+  {
+    "time_to_goal_left": 1,
+    "date": "2023-03-01",
+    "inflows": {
+      "salary": 8000,
+      "freelance": 1200
+    },
+    "outflows": {
+      "rent": 5000,
+      "groceries": 2200,
+      "transport": 1000,
+      "entertainment": 1200,
+      "impulse_spending": 500
+    },
+    "balance": 3500
+  },
+  {
+    "time_to_goal_left": 2,
+    "date": "2023-04-01",
+    "inflows": {
+      "salary": 8000,
+      "freelance": 1000,
+      "unexpected_income": 2000
+    },
+    "outflows": {
+      "rent": 5000,
+      "groceries": 2000,
+      "transport": 1000,
+      "entertainment": 1000,
+      "retail_therapy": 1500
+    },
+    "balance": 7500
+  },
+  {
+    "time_to_goal_left": 3,
+    "date": "2023-05-01",
+    "inflows": {
+      "salary": 8000,
+      "freelance": 1200
+    },
+    "outflows": {
+      "rent": 5000,
+      "groceries": 2200,
+      "transport": 1000,
+      "entertainment": 1200,
+      "guilt_spending": 800
+    },
+    "balance": 6200
+  },
+  {
+    "time_to_goal_left": 4,
+    "date": "2023-06-01",
+    "inflows": {
+      "salary": 8000,
+      "freelance": 1000
+    },
+    "outflows": {
+      "rent": 5000,
+      "groceries": 2000,
+      "transport": 1000,
+      "entertainment": 1000,
+      "medical": 1500
+    },
+    "balance": 5500
+  },
+  {
+    "time_to_goal_left": 5,
+    "date": "2023-07-01",
+    "inflows": {
+      "salary": 8000,
+      "freelance": 1200,
+      "investment_return": 3000
+    },
+    "outflows": {
+      "rent": 5000,
+      "groceries": 2200,
+      "transport": 1000,
+      "entertainment": 2000,
+      "celebratory_spending": 2500
+    },
+    "balance": 11700
+  },
+  {
+    "time_to_goal_left": 6,
+    "date": "2023-08-01",
+    "inflows": {
+      "salary": 8000,
+      "freelance": 1000
+    },
+    "outflows": {
+      "rent": 5000,
+      "groceries": 2000,
+      "transport": 1000,
+      "entertainment": 1000
+    },
+    "balance": 10700
+  }
+]
