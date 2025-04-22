@@ -2,7 +2,7 @@
 
 # Introduction
 
-This project implements an AI-powered personal finance simulator that provides actionable insights into spending, savings, and financial goals. The simulation uses multiple agents that handle different aspects of financial management, such as identifying wasteful spending, tracking goal progress, and simulating emotional spending behaviors. A new Wellness Score feature has been added to quantify financial health and track learning progress over time.
+This project implements an AI-powered personal finance simulator that provides actionable insights into spending, savings, and financial goals. The simulation uses multiple agents that handle different aspects of financial management, such as identifying wasteful spending, tracking goal progress, and simulating emotional spending behaviors. A new Wellness Score feature has been added to quantify financial health and track learning progress over time. Additionally, the system now adapts dynamically to macroeconomic conditions such as inflation, interest rates, and cost of living through a newly implemented economic_context.py module and a centralized decision-making agent.
 
 # Agents and Their Logic
 
@@ -26,6 +26,11 @@ This project implements an AI-powered personal finance simulator that provides a
 	•	Logic: Reviews past financial decisions, identifies successes and areas for improvement, and offers actionable advice for building better financial habits.
 	•	Behavioral Focus: Encourages long-term discipline and offers support in achieving sustainable financial growth.
 
+	5.Agent Coordinator (NEW)
+	•	Goal: Act as a central decision-maker by merging and reconciling agent outputs.
+	•	Logic: Receives contextualized inputs (like inflation or interest rate) along with agent outputs, determines optimal actions, and outputs structured JSON 
+	•	Significance: Ensures coherence across agents, reduces redundancy, and helps users take a single, clear next step.
+
 # System Architecture
 
 The system is built using the Crew AI framework, which allows for easy management and execution of tasks and agents. Each agent is defined with a specific role and goal, and tasks such as simulating cash flow or tracking goals are executed sequentially. The agents communicate with each other to provide a comprehensive view of the user’s financial behavior.
@@ -41,6 +46,8 @@ The system is built using the Crew AI framework, which allows for easy managemen
 	•	Monthly Summary: At the end of the simulation, this task generates a summary report that consolidates all data, provides insights into the user’s behavior, and suggests improvements.
 
 	•	Wellness Scoring: All simulation tasks now contribute to a real-time Financial Wellness Score (0-100) that evaluates spending discipline, savings efficiency, and goal progress, with personalized improvement tips generated after each simulation. The score appears in all reports and dashboards, visually tracking the user's financial learning curve over time.
+		
+	•	Agent Coordination (NEW): Synthesizes outputs into a final recommended action using a structured JSON schema. Includes rationale, behavior notes, and prioritized suggestions.
 
 # Memory Storage Implementation
 	•	The memory components for the system have been fully integrated to enhance agent capabilities. However, due to limitations with the free version of the platform, these memory components are currently commented out. The intention is to activate them once higher resource limits are available.

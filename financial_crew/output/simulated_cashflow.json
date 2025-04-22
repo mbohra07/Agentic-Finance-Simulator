@@ -1,114 +1,149 @@
 [
   {
-    "time_to_goal_left": 0,
     "date": "2023-02-01",
+    "time_to_goal_left": 0,
     "inflows": {
-      "salary": 8000,
-      "freelance": 1000
+      "salary": 10000,
+      "freelance": 0,
+      "investment_return": 0,
+      "unexpected_income": 0
     },
     "outflows": {
       "rent": 5000,
       "groceries": 2000,
       "transport": 1000,
-      "entertainment": 1000
-    },
-    "balance": 3000
-  },
-  {
-    "time_to_goal_left": 1,
-    "date": "2023-03-01",
-    "inflows": {
-      "salary": 8000,
-      "freelance": 1200
-    },
-    "outflows": {
-      "rent": 5000,
-      "groceries": 2200,
-      "transport": 1000,
-      "entertainment": 1200,
-      "impulse_spending": 500
+      "entertainment": 500,
+      "impulse_spending": 0,
+      "medical": 0,
+      "guilt_spending": 0,
+      "retail_therapy": 0
     },
     "balance": 3500
   },
   {
-    "time_to_goal_left": 2,
-    "date": "2023-04-01",
+    "date": "2023-03-01",
+    "time_to_goal_left": 0,
     "inflows": {
-      "salary": 8000,
-      "freelance": 1000,
-      "unexpected_income": 2000
+      "salary": 10000,
+      "freelance": 2000,
+      "investment_return": 0,
+      "unexpected_income": 0
     },
     "outflows": {
       "rent": 5000,
       "groceries": 2000,
       "transport": 1000,
-      "entertainment": 1000,
-      "retail_therapy": 1500
-    },
-    "balance": 7500
-  },
-  {
-    "time_to_goal_left": 3,
-    "date": "2023-05-01",
-    "inflows": {
-      "salary": 8000,
-      "freelance": 1200
-    },
-    "outflows": {
-      "rent": 5000,
-      "groceries": 2200,
-      "transport": 1000,
-      "entertainment": 1200,
-      "guilt_spending": 800
-    },
-    "balance": 6200
-  },
-  {
-    "time_to_goal_left": 4,
-    "date": "2023-06-01",
-    "inflows": {
-      "salary": 8000,
-      "freelance": 1000
-    },
-    "outflows": {
-      "rent": 5000,
-      "groceries": 2000,
-      "transport": 1000,
-      "entertainment": 1000,
-      "medical": 1500
+      "entertainment": 800,
+      "impulse_spending": 500,
+      "medical": 0,
+      "guilt_spending": 0,
+      "retail_therapy": 0
     },
     "balance": 5500
   },
   {
-    "time_to_goal_left": 5,
-    "date": "2023-07-01",
+    "date": "2023-04-01",
+    "time_to_goal_left": 0,
     "inflows": {
-      "salary": 8000,
-      "freelance": 1200,
-      "investment_return": 3000
+      "salary": 10000,
+      "freelance": 0,
+      "investment_return": 0,
+      "unexpected_income": 2000
     },
     "outflows": {
       "rent": 5000,
-      "groceries": 2200,
-      "transport": 1000,
-      "entertainment": 2000,
-      "celebratory_spending": 2500
+      "groceries": 2500,
+      "transport": 1500,
+      "entertainment": 1000,
+      "impulse_spending": 1000,
+      "medical": 0,
+      "guilt_spending": 0,
+      "retail_therapy": 0
     },
-    "balance": 11700
+    "balance": 4000
   },
   {
-    "time_to_goal_left": 6,
-    "date": "2023-08-01",
+    "date": "2023-05-01",
+    "time_to_goal_left": 0,
     "inflows": {
-      "salary": 8000,
-      "freelance": 1000
+      "salary": 12000,
+      "freelance": 0,
+      "investment_return": 0,
+      "unexpected_income": 0
     },
     "outflows": {
       "rent": 5000,
       "groceries": 2000,
       "transport": 1000,
-      "entertainment": 1000
+      "entertainment": 1500,
+      "impulse_spending": 500,
+      "medical": 0,
+      "guilt_spending": 500,
+      "retail_therapy": 0
     },
-    "balance": 10700
+    "balance": 7000
+  },
+  {
+    "date": "2023-06-01",
+    "time_to_goal_left": 0,
+    "inflows": {
+      "salary": 10000,
+      "freelance": 0,
+      "investment_return": 0,
+      "unexpected_income": 0
+    },
+    "outflows": {
+      "rent": 5000,
+      "groceries": 2000,
+      "transport": 1000,
+      "entertainment": 500,
+      "impulse_spending": 0,
+      "medical": 1000,
+      "guilt_spending": 0,
+      "retail_therapy": 0
+    },
+    "balance": 4000
+  },
+  {
+    "date": "2023-07-01",
+    "time_to_goal_left": 0,
+    "inflows": {
+      "salary": 10000,
+      "freelance": 3000,
+      "investment_return": 0,
+      "unexpected_income": 0
+    },
+    "outflows": {
+      "rent": 5000,
+      "groceries": 2500,
+      "transport": 1500,
+      "entertainment": 1500,
+      "impulse_spending": 1000,
+      "medical": 0,
+      "guilt_spending": 500,
+      "retail_therapy": 500
+    },
+    "balance": 6000
+  },
+  {
+    "date": "2023-08-01",
+    "time_to_goal_left": 0,
+    "inflows": {
+      "salary": 10000,
+      "freelance": 0,
+      "investment_return": 0,
+      "unexpected_income": 0
+    },
+    "outflows": {
+      "rent": 5000,
+      "groceries": 2000,
+      "transport": 1000,
+      "entertainment": 1000,
+      "impulse_spending": 0,
+      "medical": 0,
+      "guilt_spending": 0,
+      "retail_therapy": 0
+    },
+    "balance": 5000
   }
 ]

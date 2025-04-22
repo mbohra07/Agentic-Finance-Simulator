@@ -45,6 +45,11 @@ FINANCIAL_AGENT_SIMULATION/
         ├── venv/                        
         └── _pycache_/                 
 
+# ARCHITECTURE
+
+    input generation -> simulation -> output to dashboard
+    streamlit_app.py -> tasks.yaml -> Streamlit_app.py
+    
 # SetUp Instructions
 
 1.⁠ ⁠Clone the repository:

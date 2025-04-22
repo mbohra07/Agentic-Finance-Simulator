@@ -32,7 +32,11 @@ class FinancialCrew():
     @agent
     def emotional_bias_agent(self) -> Agent:
         return Agent(config=self.agents_config['emotional_bias_agent'], verbose=True)
-
+    
+    @agent
+    def agent_coordinator(self) -> Agent:
+        return Agent(config=self.agents_config['agent_coordinator'], verbose=True)
+    
     @agent
     def mentor_agent(self) -> Agent:
         return Agent(config=self.agents_config['mentor_agent'], verbose=True)
@@ -50,6 +54,10 @@ class FinancialCrew():
         return Task(config=self.tasks_config['track_goals'])
 
     @task
+    def coordinator_decision(self) -> Task:
+        return Task(config=self.tasks_config['coordinator_decision'], output_file='output/final_action.md')
+    
+    @task
     def monthly_summary(self) -> Task:
         return Task(config=self.tasks_config['monthly_summary'], output_file='output/report.md')
     
@@ -60,10 +68,12 @@ class FinancialCrew():
         evaluate_task = self.evaluate_spending()
         goal_task = self.track_goals()
         summary_task = self.monthly_summary()
+        coordinator_task = self.coordinator_decision()
 
         evaluate_task.context = [simulate_task]
-        goal_task.context = [simulate_task, evaluate_task]
-        summary_task.context = [simulate_task, evaluate_task, goal_task]
+        goal_task.context = [simulate_task]
+        coordinator_task.context = [evaluate_task, goal_task]
+        summary_task.context = [simulate_task, coordinator_task]
 
         return Crew(
             agents=self.agents,

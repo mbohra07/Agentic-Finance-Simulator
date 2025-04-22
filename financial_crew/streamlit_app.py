@@ -6,6 +6,7 @@ from litellm import RateLimitError
 from crew import FinancialCrew
 from datetime import date
 import pandas as pd
+from economic_context import EconomicContext
 
 # Streamlit configuration
 st.set_page_config(
@@ -255,28 +256,14 @@ def calculate_wellness_score(cashflow_data, goal_data):
                 goal_percent = float(goal_text) / 100
             except:
                 pass
-
-        savings_rate = (total_inflows - total_outflows) / total_inflows if total_inflows > 0 else 0
         
-        # Count impulse spending occurrences
-        impulse_spends = sum(1 for day in cashflow_data if "impulse_spending" in day["outflows"])
-        
-        # Goal progress (extract from goal tracking or calculate)
-        goal_percent = 0
-        if "Achieved:" in goal_data:
-            try:
-                goal_text = goal_data.split("Achieved:")[1].split("%")[0].strip()
-                goal_percent = float(goal_text) / 100
-            except:
-                pass
         
         # Calculate score components (0-100 scale)
         savings_score = min(100, savings_rate * 200)  # 50% savings rate = 100 score
         impulse_score = max(0, 100 - (impulse_spends * 5))  # -5 points per impulse spend
         goal_score = goal_percent * 100
-        consistency_score = 80  # Placeholder for more advanced calculation
+        consistency_score = 80  
         
-        # Weighted final score
         wellness_score = (
             0.3 * savings_score +
             0.25 * impulse_score +
@@ -374,15 +361,20 @@ if submit:
             with open(cashflow_path, "r") as f:
                 cashflow_data = json.load(f)
             
-            # Calculate summary metrics
-            total_inflows = sum(sum(day["inflows"].values()) for day in cashflow_data)
-            total_outflows = sum(sum(day["outflows"].values()) for day in cashflow_data)
             time_to_goal_left = cashflow_data[-1].get("time_to_goal_left", len(cashflow_data) - 1)
 
             starting_balance = cashflow_data[0]["balance"] - sum(cashflow_data[0]["inflows"].values()) + sum(cashflow_data[0]["outflows"].values())
             ending_balance = cashflow_data[-1]["balance"]
             net_savings = ending_balance - starting_balance
             savings_percentage = (net_savings / starting_balance) * 100
+
+            eco_env = EconomicContext()
+
+            for step in range(5):  # 30 days or months
+                eco_env.simulate_step()
+                context = eco_env.get_context()
+            economic_context = context
+
         user_inputs = {
             'user_name': user_name,
             'age': age,
@@ -394,7 +386,8 @@ if submit:
             'ending_balance': ending_balance,
             'net_savings': net_savings,
             'savings_percentage': savings_percentage,
-            'time_to_goal_left': time_to_goal_left
+            'time_to_goal_left': time_to_goal_left,
+            'economic_context': economic_context
         }
 
         os.makedirs("output", exist_ok=True)
