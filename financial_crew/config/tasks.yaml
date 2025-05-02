@@ -3,23 +3,31 @@ simulate_cash_flow:
     <<SYS>>
     You are a financial simulation assistant. Always respond ONLY with the final output.
     NEVER include prep statements like "Now I can answer", "Here's the result", or reasoning.
-    Only output structured JSON.
+    Only output an array of objects with keys:
+    "date", "time_to_goal_left", "inflows", "outflows", "balance", "User".
+    "inflows" must have "salary", "freelance", "investment_return", "unexpected_income".
+    "outflows" must have "rent", "groceries", "transport", "entertainment", "impulse_spending", "medical", "guilt_spending", "retail_therapy".
+    All keys must always be present. No text outside the JSON.
     <</SYS>>
-    Simulate {simulation_steps}-step cash flow for {user_name}, a {age}-year-old {occupation} with ₹{starting_balance} and income ₹{income_level}.
+
+    Simulate cash flows for that {simulation_unit} for {user_name}, a {age}-year-old {occupation} with ₹{starting_balance} and income ₹{income_level}.
+
+    {cashflow_context}
 
     Include:
-    - Inflows: salary, freelance, investment_return, surprise_income
-    - Outflows: rent, groceries, transport, entertainment, impulse, medical, guilt, retail_therapy
+    - Inflows: {monthly_earning}, salary, freelance, investment_return, surprise_income
+    - Outflows: {monthly_expenses}, rent, groceries, transport, entertainment, impulse, medical, guilt, retail_therapy
     - Emotional/irrational behavior (simulate with emotional_bias_agent)
     - Random events: job loss, bonus, gift, medical emergency
+    - Choices: delay gratification, switch career, donate to cause
 
     Constraints:
-    - Outflows ≤ inflows + balance
+    - Outflows ≤ inflows 
     - Prioritize essentials (rent, groceries, medical); reduce non-essentials if needed
+    - Include savings behavior, saving {percentage_of_my_savings}% of {monthly_earning} towards savings goal of ₹{savings_target}.
+    - Track monthly progress towards savings target.
 
   expected_output: >
-    Return JSON list with inflows, outflows, and balance per step:
-
     [
       {
         "date": "YYYY-MM-DD",
@@ -40,108 +48,403 @@ simulate_cash_flow:
           "guilt_spending": ₹,
           "retail_therapy": ₹
         },
-        "balance": ₹
+        "balance": ₹,
+        "User": "{user_name}"
       }
     ]
 
   agent: emotional_bias_agent
-  frequency: monthly
   output_file: output/simulated_cashflow.json
   retry_policy:
-    max_retries: 2
+    max_retries: 3
     retry_interval: 45s
-    
+
 evaluate_spending:
   description: >
     <<SYS>>
     You are a financial simulation assistant. Always respond ONLY with the final output.
     NEVER include prep statements like "Now I can answer", "Here's the result", or reasoning.
-    Only the required output.
+
+    Each object must have these keys:
+    - "user_name" (string)
+    - "occupation" (string)
+    - "income" (string)
+    - "goal" (string)
+    - "savings_target" (string)
+    - "savings_rate" (string with % sign, e.g., "20%")
+    - "top_wasteful_expenses" (array of 3 objects with "category" and "amount" as string with ₹ sign)
+    - "overspending_categories" (array of 1+ objects with "category" and "benchmark_variance" as string with % sign)
+    - "savings_rate_assessment" (object with "current_rate" (string with % sign), "suggested_improvement" (string with % sign), "notes" (string))
+    - "consistency_tips" (array of at least 3 actionable tips as strings)
+
+    All keys must be present in every object. Return only JSON, no text outside it.
     <</SYS>>
-    Analyze {{user_name}}’s spending. Flag inefficiencies using:
-    - Occupation: {{occupation}}
-    - Income: ₹{{income_level}}
-    - Goal: "{{goal}}"
+    Analyze {user_name}’s spending. Flag inefficiencies using:
+    - Occupation: {occupation}
+    - Income: ₹{income_level}
+    - Goal: "{goal}"
+    - Savings Target: ₹{savings_target}
+    - Savings Rate: {percentage_of_my_savings}%
 
     Use principles of opportunity cost, budget allocation, and utility.
-    🎯 Tip: Boost savings without affecting essentials.
+    Tip: Adjust based on inflation={inflation}, COL={cost_of_living_index}, interest={interest_rate}
   expected_output: |
-    Spending Review & Suggestions for {{user_name}}:
-    - [Top 3 wasteful expenses, ₹]
-    - Overspending categories (vs benchmarks)
-    - Savings rate & how to improve
-    - Simple tips for consistency
-    - Tip: Adjust based on inflation={{economic_context.inflation*100}}%, COL={{economic_context.cost_of_living_index}}, interest={{economic_context.interest_rate*100}}%
+    [
+      {
+        "user_name": "{user_name}",
+        "occupation": "{occupation}",
+        "income": "{income_level}",
+        "goal": "{goal}",
+        "savings_target": "{savings_target}",
+        "savings_rate": "{percentage_of_my_savings}%",
+        "top_wasteful_expenses": [
+          { "category": "X", "amount": "Y" },
+          { "category": "X", "amount": "Y" },
+          { "category": "X", "amount": "Y" }
+        ],
+        "overspending_categories": [
+          { "category": "X", "benchmark_variance": "+Z%" }
+        ],
+        "savings_rate_assessment": {
+          "current_rate": %,
+          "suggested_improvement": "+N%",
+          "notes": "e.g., divert X expense toward savings"
+        },
+        "List of consistency_tips": 
+      }
+    ]
   agent: spending_advisor
-  context: 
-  - simulate_cash_flow
-  output_file: output/spending_review.md
+  output_file: output/spending_review.json
+  retry_policy: { max_retries: 3, retry_interval: 45s }
 
 track_goals:
   description: >
     <<SYS>>
     You are a financial simulation assistant. Always respond ONLY with the final output.
     NEVER include prep statements like "Now I can answer", "Here's the result", or reasoning.
+    Only output an array of objects with keys:
+    "user_name", "goal", "achieved_percentage", "projected_amount", "time_left", "economic_adjustments_tip".
+    All keys must always be present. No text outside the JSON.
     <</SYS>>
-    Evaluate {{user_name}}’s progress toward goal: "{{goal}}"
-    Based on {{simulation_steps}}-step simulation and economic context.
+    Evaluate {user_name}’s progress toward goal: "{goal}"
+    Based on cash flow simulation, economic context, and user’s savings target of ₹{savings_target} and savings rate of {percentage_of_my_savings}%.
+    - Track total earnings from {monthly_earning}.
+    - Assess current savings against target.
+    Tip: Adjust based on inflation={inflation}, COL={cost_of_living_index}, interest={interest_rate}
+
   expected_output: |
-    📊 Goal Progress Summary:
-    - Goal: "{{goal}}"
-    - Achieved: % of goal
-    - Projected: ₹amount
-    - Time left: estimate
-    🧠 Tip: Adjust based on inflation={{economic_context.inflation*100}}%, COL={{economic_context.cost_of_living_index}}, interest={{economic_context.interest_rate*100}}%
+    [
+      {
+        "user_name": "{user_name}",
+        "goal": "{goal}",
+        "achieved_percentage": number,
+        "projected_amount": number,
+        "time_left": "string",
+        "economic_adjustments_tip": "string"
+      }
+    ]
   agent: goal_tracker
-  context: 
-  - simulate_cash_flow
-  output_file: output/goal_tracking.md
-  retry_policy: { max_retries: 2, retry_interval: 30s }
+  output_file: output/goal_tracking.json
+  retry_policy: { max_retries: 3, retry_interval: 45s }
+
+financial_strategy_task:
+  description: >
+    <<SYS>>
+    You are a financial simulation assistant. Always respond ONLY with the final output.
+    NEVER include prep statements like "Now I can answer", "Here's the result", or reasoning.
+    Only output an object with the key "financial_allocation_plan" containing all required fields.
+    All keys must always be present. No text outside the JSON.
+    <</SYS>>
+    Analyze {user_name}’s financial situation using:
+    - Income: ₹{monthly_earning} per month
+    - Savings Rate: {percentage_of_my_savings}%
+    - Expenses: ₹{monthly_expenses}
+    - Goal plan: {goal}
+    - Simulation: Cash flow simulation
+    - Economic Context: Inflation={inflation}, COL={cost_of_living_index}, Interest Rate={interest_rate}
+
+    Use tools to recommend:
+    - 📉 Debt Repayment Plan
+    - 📈 Portfolio Growth Strategy
+    - 🛡️ Emergency Fund Target
+
+  expected_output: |
+    {
+      "financial_allocation_plan": 
+      {
+        "debt_rep_payment_pct": ,
+        "debt_rep_payment_amount": ,
+        "investment_pct": ,
+        "investment_amount": ,
+        "emergency_fund_pct": ,
+        "emergency_fund_amount": 
+      }
+    }
+  agent: financial_strategy_agent
+  output_file: output/financial_strategy.json
+  retry_policy: { max_retries: 3, retry_interval: 45s }
 
 coordinator_decision:
   description: >
     <<SYS>>
     You are a financial simulation assistant. Always respond ONLY with the final output.
     NEVER include prep statements like "Now I can answer", "Here's the result", or reasoning.
-    Only output structured JSON.
+    Only output an array of objects with keys: "final_action", "rationale", "emotional_behavior", "summary_of_spending", "summary_of_goals" and "List of recommendations".
+    All keys must always be present. No text outside the JSON.
     <</SYS>>
     You are the Agent Coordinator. Merge outputs from Spending and Goal Tracker.
     Choose final action. If conflicts, reconcile.
   expected_output: |
-    {
-      "final_action": "...",
-      "rationale": "...",
-      "emotional_behavior": "...",
-      "summary_of_spending": "...",
-      "summary_of_goals": "...",
-      "recommendations": [...]
-    }
+    [
+      {
+        "final_action": ,
+        "rationale": ,
+        "emotional_behavior": ,
+        "summary_of_spending": ,
+        "summary_of_goals": ,
+        "List of recommendations": 
+      }
+    ]
   agent: agent_coordinator
-  context: 
-  - evaluate_spending
-  - track_goals
-  output_file: output/coordinator_context.json
-  retry_policy: { max_retries: 2, retry_interval: 30s }
+  output_file: output/coordinator_decision.json
+  retry_policy: { max_retries: 3, retry_interval: 45s }
+
+discipline_tracker_task:
+  description: >
+    <<SYS>>
+    You are a financial simulation assistant. Always respond ONLY with the final output.
+    NEVER include prep statements like "Now I can answer", "Here's the result", or reasoning.
+    Only output an array of objects with keys:
+    "character_profile" (with keys "discipline", "greed", "awareness", "resilience") and "updated_at".
+    All keys must always be present. No text outside the JSON.
+    <</SYS>>
+    Based on cash flow simulation and coordinator's decision Analyze and assess {user_name}'s core character traits like discipline, greed, awareness, and resilience using the tool provided.
+    These insights will help adapt future financial guidance and emotional mentoring.
+  expected_output: |
+    [
+      {
+        "character_profile": {
+          "discipline": 
+          "greed": 
+          "awareness": 
+          "resilience": 
+        },
+        "updated_at": 
+      }
+    ]
+  agent: discipline_tracker_agent
+  output_file: output/discipline_tracker_results.json
+  retry_policy:
+    max_retries: 3
+    retry_interval: 45s
+
+behavior_tracker_task:
+  description: >
+    <<SYS>>
+    You are a financial behavior tracking assistant. Always respond ONLY with the final output.
+    NEVER include prep statements like "Now I can answer", "Here's the result", or reasoning.
+    Only output an array of objects with keys:
+    "user_id", "user_name", "month", "spending", "saving", "goal_achieved", "behavior_pattern", "historical_log".
+    "historical_log" must be an array with objects having "month", "spending", "saving", "goal_achieved".
+    All keys must always be present. No text outside the JSON.
+    <</SYS>>
+    Based on cash flow simulation and coordinator's decision Analyze and assess {user_name}'s behavior.
+
+    Detect patterns over time:
+    - "Consistent Saver": consistently saves a significant portion of income.
+    - "Occasional Spender": frequent spikes where spending > 1.5x saving.
+    - "Inconsistent Behavior": irregular saving and spending behavior.
+
+    Maintain cumulative monthly logs, evaluate user behavior pattern, and update historical tracking based on detected behavior using the output from previous agents.
+  expected_output: >
+    [
+      {
+        "user_id": ,
+        "user_name": ,
+        "month": ,
+        "spending": ,
+        "saving": ,
+        "goal_achieved": ,
+        "behavior_pattern": ,
+        "List of historical logs": [
+          {
+            "month": "YYYY-MM",
+            "spending": ,
+            "saving": ,
+            "goal_achieved": true/false
+          }
+        ]
+      }
+    ]
+
+  agent: behavior_tracker_agent
+  output_file: output/behavior_tracker.json
+  retry_policy:
+    max_retries: 3
+    retry_interval: 45s
+
+karma_tracker_task:
+  description: >
+    <<SYS>>
+    You are a financial behavior tracking assistant. Always respond ONLY with the final output.
+    NEVER include prep statements like "Now I can answer", "Here's the result", or reasoning. Only output an array of objects with keys:
+    "date", "action", "trait_type", "karmic_score", "symbolic_reason".
+    All keys must always be present. No text outside the JSON.
+    <</SYS>>
+
+    Based on cash flow simulation and coordinator's decision Analyze and Evaluate {user_name}'s financial behaviour through symbolic traits.
+    Use the sattvic–rajasic–tamasic framework from Indian philosophy to log karmic values for actions.
+    Only return JSON structured logs for each financial behavior.
+    For each financial action taken by the {user_name}, evaluate and log its karmic nature:
+    - Sattvic traits: simplicity, discipline, charity, mindful saving, debt avoidance
+    - Rajasic traits: ambition, investing for personal gain, hedging, trading, speculative actions
+    - Tamasic traits: impulse spending, guilt purchases, excessive consumption, debt accumulation
+  Assign:
+  - trait_type:- sattvic | rajasic | tamasic
+  - karmic_score:- +1 (sattvic), 0 (rajasic), -1 (tamasic)
+  - symbolic_reason:- “Spent impulsively on gadgets”, “Donated to food relief”, etc.
+  expected_output: >
+    [
+      {
+        “date”: ,
+        “action”: ,
+        “trait_type”: ,
+        “karmic_score”: ,
+        “symbolic_reason”: 
+      }
+    ]
+  agent: karma_tracker_agent
+  output_file: output/karmic_tracker.json
+  frequency: monthly
+  retry_policy:
+  max_retries: 3
+  retry_interval: 60s
+
+mentor_task:
+  description: >
+    <<SYS>>
+      You are a financial simulation assistant. Always respond ONLY with the final output.
+      NEVER include prep statements like "Now I can answer", "Here's the result", or reasoning.
+      Only output structured JSON.
+
+      Always structure your JSON output with **exactly these 4 keys**: 
+      "message", "insight", "suggestion", and "karmic_reflection".
+      Do not output anonymous strings or omit keys. Even if unsure, always return complete JSON.
+    <</SYS>>
+      Use cash flow simulation and coordinator's decision to provide symbolic advice, metaphors, or inspirational quotes.
+      Tailor the guidance based on evolving character traits such as discipline, awareness, greed, or resilience — 
+      inferred from logs or discipline data. Encourage long-term thinking and reinforce growth mindset.
+
+      Occasionally observe karmic flow through sattvic, rajasic, and tamasic tendencies using data:
+      - Reflect sattvic rise as a gentle spiritual ascent.
+      - If tamasic patterns emerge, respond with metaphors of stillness, shadow, or potential renewal.
+      - Let karmic progression subtly shape the tone of insight or suggestion, never with judgment.
+      Internally:
+      - Score user on hidden traits: risk, greed, generosity, wisdom.
+      - Match traits to a hidden Laxmi archetype (e.g., Dhairya Laxmi, Vidya Laxmi, Dhan Laxmi).
+      - Save a hidden log to `data/mentor_hidden_insights.json` with the full trait profile and guidance path.
+  expected_output: |
+    [
+      {
+        "message": "A symbolic quote or spiritual metaphor that reflects the user's current financial journey. For example: 'The lotus blooms untouched by the mud — so too must your wealth blossom amidst life’s trials.'",
+        "insight": "A personalized reflection blending emotional intelligence and inferred traits like discipline, greed, awareness, and resilience. For example: 'You’ve shown the patience of a sage, though moments of desire still stir your path.'",
+        "suggestion": "A forward-looking metaphor or ancient principle for growth, without direct advice. For example: 'Let your coins flow like the Ganga — giving, saving, and moving with purpose — not stagnating in fear or indulgence.'",
+        "karmic_reflection": "Your karmic path reveals a gentle sattvic ascent — like a dawn slowly dispelling the shadows. Continue nurturing clarity and balance, for it shapes both spirit and sustenance."
+      }
+    ]
+  agent: mentor_agent
+  output_file: output/mentor_advice.json
+  retry_policy:
+    max_retries: 3
+    retry_interval: 45s
 
 monthly_summary:
   description: >
     <<SYS>>
     You are a financial simulation assistant. Always respond ONLY with the final output.
     NEVER include prep statements like "Now I can answer", "Here's the result", or reasoning.
-    Only output structured JSON.
+
+    STRICT JSON OUTPUT RULES:
+    - Output shoudl never be and any other data point and must always be a JSON array with exactly ONE object inside.
+    - Must have EXACTLY two top-level keys: "overview" and "recommendations".
+    - Must always include ALL nested keys, even if values are null or empty.
+    - Strings must be quoted with double quotes, numbers without trailing commas.
+    - Never include text, comments, or explanation outside the JSON array.
+    - No extra text like "Result:", "Task finished", or code blocks.
+    - Never include trailing commas in JSON objects or arrays.
+    - All keys must exactly match the structure below (case-sensitive).
+
+    STRUCTURE:
+    [
+      {
+        "overview": 
+        {
+          "cash_flow_summary": {
+            "total_income": null,
+            "total_expenses": null,
+            "net_savings": null,
+            "net_cash_flow": null
+          },
+          "spending_behavior_and_emotional_patterns": {
+            "impulsiveness_score": null,
+            "discipline_score": null,
+            "emotional_triggers": null,
+            "observed_spending_patterns": null
+          },
+          "goal_progress": {
+            "goal": "",
+            "progress_percent": null,
+            "projected_savings": null,
+            "time_to_goal": null
+          }
+        },
+        "recommendations": 
+        {
+          "coordinator_recommendation": null,
+          "suggestions_for_next_month": []
+        }
+      }
+    ]
+
+    Always conform to this format strictly.
     <</SYS>>
-    Write a clear monthly financial report from coordinator_decision and simulate_cash_flow.
-    Include spending behavior, goal tracking, emotion triggers, and advice.
+    Synthesize insights from all the agents above.
+    Provide a holistic summary of the user's financial activity, emotional drivers,
+    spending behavior, and goal progress. Include smart suggestions for the upcoming month.
+    
+    Tailor language based on observed patterns such as discipline, impulsiveness, savings effort,
+    and external economic triggers.
   expected_output: |
-    ## Overview & Highlights
-    ## Cash Flow Summary
-    ## Spending Behavior & Emotional Patterns
-    ## Goal Progress & Recommendations
-    ## Coordinator Recommendation
-    ## Suggestions for Next Month
-  agent: mentor_agent
-  context: 
-  - simulate_cash_flow
-  - coordinator_decision
-  output_file: output/report.md
-  retry_policy: { max_retries: 2, retry_interval: 60s }
+    [
+      {
+        "overview": 
+        {
+          "cash_flow_summary": {
+            "total_income": null,
+            "total_expenses": null,
+            "net_savings": null,
+            "net_cash_flow": null
+          },
+          "spending_behavior_and_emotional_patterns": {
+            "impulsiveness_score": null,
+            "discipline_score": null,
+            "emotional_triggers": null,
+            "observed_spending_patterns": null
+          },
+          "goal_progress": {
+            "goal": "",
+            "progress_percent": null,
+            "projected_savings": null,
+            "time_to_goal": null
+          }
+        },
+        "recommendations": 
+        {
+          "coordinator_recommendation": null,
+          "suggestions_for_next_month": []
+        }
+      }
+    ]
+  agent: monthly_summary_agent
+  output_file: output/monthly_summary.json
+  retry_policy: { max_retries: 3, retry_interval: 60s }

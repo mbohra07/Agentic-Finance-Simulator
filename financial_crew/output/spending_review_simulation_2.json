@@ -1,0 +1,40 @@
+[
+    {
+        "user_name": "Madhuram Bohra",
+        "occupation": "Student",
+        "income": "₹8000",
+        "goal": "Save 30,000 in 6 months",
+        "savings_target": "₹5000",
+        "savings_rate": "33%",
+        "top_wasteful_expenses": [
+            {
+                "category": "Entertainment",
+                "amount": "₹1500"
+            },
+            {
+                "category": "Food Delivery",
+                "amount": "₹1000"
+            },
+            {
+                "category": "Clothing",
+                "amount": "₹800"
+            }
+        ],
+        "overspending_categories": [
+            {
+                "category": "Recreation",
+                "benchmark_variance": "+25%"
+            }
+        ],
+        "savings_rate_assessment": {
+            "current_rate": "33%",
+            "suggested_improvement": "+10%",
+            "notes": "Divert Entertainment expense towards savings"
+        },
+        "consistency_tips": [
+            "Set reminders to review budget every month",
+            "50/30/20 rule for allocating income",
+            "Implement a 'Waiting Period' before buying non-essential items"
+        ]
+    }
+]

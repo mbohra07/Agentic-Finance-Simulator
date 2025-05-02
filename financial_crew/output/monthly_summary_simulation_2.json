@@ -1,0 +1,32 @@
+[
+    {
+        "overview": {
+            "cash_flow_summary": {
+                "total_income": 8000.0,
+                "total_expenses": 6300.0,
+                "net_savings": 1700.0,
+                "net_cash_flow": 2700.0
+            },
+            "spending_behavior_and_emotional_patterns": {
+                "impulsiveness_score": 0.45,
+                "discipline_score": 0.65,
+                "emotional_triggers": "Limited budget management",
+                "observed_spending_patterns": "Tendency to save more than planned"
+            },
+            "goal_progress": {
+                "goal": "Save 30,000 in 6 months",
+                "progress_percent": 56.67,
+                "projected_savings": 20000.0,
+                "time_to_goal": 2
+            }
+        },
+        "recommendations": {
+            "coordinator_recommendation": "Maintain current savings pace and adjust spending habits to stay on track",
+            "suggestions_for_next_month": [
+                "Continue to reduce unnecessary expenses and allocate more towards savings",
+                "Consider exploring alternative income sources to boost earnings",
+                "Monitor and adjust spending habits to stay disciplined and focused on the goal"
+            ]
+        }
+    }
+]

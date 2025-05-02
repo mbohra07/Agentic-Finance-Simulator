@@ -24,26 +24,43 @@ FINANCIAL_AGENT_SIMULATION/
         ├── config/                      
         │   ├── agents.yaml
         │   └── tasks.yaml
-        │
-        ├── output/                      
-        │   └── report.md
-        │   └── goal_tracking.md
-        │   └── spending_review.md
-        │   └── simulated_cashflow.json
+        ├── functions/                      
+        │   ├── economic_context.py
+        │   └── monthly_simulation.py
+        │   └── streamlit_functions.py
+        │   └── crew_functions.py
+        ├── data/                      
+        │   └── user_profile.yaml
+        │   └── timeline_{user_name}.json    
+        ├── docs_and_reports/                      
+        │   ├── README.md
+        │   ├── INSTRUCTIONS.md       
+        │   └── requirements.txt
+        │   └── short_report.pdf
+        │   └── short_report.md
+        ├── output/    
+        │   └── behavior_tracker_simulation_{month}.json
+        │   └── financial_strategy_simulation_{month}.json
+        │   └── monthly_summary_simulation_{month}.json 
+        │   └── mentor_advice_simulation_{month}.json                 
+        │   └── karmic_tracker_simulation_{month}.json
+        │   └── discipline_tracker_simulation_{month}.json
+        │   └── coordinator_decision_simulation_{month}.json
+        │   └── goal_tracking_simulation_{month}.json
+        │   └── spending_review_simulation_{month}.json
+        │   └── simulated_cashflow_simulation_{month}.json
         ├── tools/                       
-        │   ├── _init_.py
-        ├── _init_.py                  
+        │   ├── _financial_tools.py 
+        ├── venv/    
+        ├── .env                                                                       
         ├── crew.py                     
-        ├── main.py                   
+        ├── agentops.log              
         ├── streamlit_app.py             
-        ├── short_report.md           
+        ├── pyproject.toml          
         ├── requirements.txt             
-        ├── pyproject.toml              
-        ├── .env                        
-        ├── README.md                  
-        ├── tests/                       
-        ├── venv/                        
-        └── _pycache_/                 
+        ├── train_model.py                                  
+        └── uv.lock 
+        └── your_model.pkl               
 
 # ARCHITECTURE
 
@@ -55,8 +72,7 @@ FINANCIAL_AGENT_SIMULATION/
 1.⁠ ⁠Clone the repository:
     git clone https://github.com/mbohra07/Financial_Agent_Simulator.git
 
-
-2.⁠ ⁠pip install -r requirements.txt
+2.⁠ ⁠pip install -r docs_and_reports/requirements.txt
 
 3.⁠ ⁠Set up environment variables (e.g., API keys, model paths) by creating a .env file.
 
@@ -67,12 +83,4 @@ FINANCIAL_AGENT_SIMULATION/
     venv\Scripts\activate     # Windows
 
 5.⁠ ⁠To start the financial simulation, run:
-    python -m streamlit run src/financial_crew/streamlit_app.py
-
-# Output Files
-
-The simulation generates several output files, including:
-	•	simulate_cash_flow.json: Contains detailed cash flow simulations for the specified months.
-	•	spending_review.md: Summarizes inefficiencies in spending and provides actionable advice.
-	•	goal_tracking.md: Tracks the user’s progress toward their financial goals.
-	•	monthly_summary.md: A comprehensive summary of the user’s financial behavior, including emotional influences and overall    goal progress.
+    python -m streamlit run streamlit_app.py

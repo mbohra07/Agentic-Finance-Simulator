@@ -1,14 +1,15 @@
-import time
 import streamlit as st
-import os
-import json
-from litellm import RateLimitError
-from crew import FinancialCrew
-from datetime import date
-import pandas as pd
-from economic_context import EconomicContext
+from functions.streamlit_functions import *
+import agentops
+from functions.crew_functions import *
 
-# Streamlit configuration
+agentops.init(
+    api_key='0c4bf935-54bd-42f0-8c82-9a044f1afe10',
+    default_tags=['crewai']
+)
+
+# ************************************************Streamlit configuration************************************************************
+
 st.set_page_config(
     page_title="🧠 Financial Agent Simulator", 
     layout="centered",
@@ -26,13 +27,24 @@ with st.sidebar:
     st.header("Simulation Navigation")
     display_option = st.radio(
         "View Results",
-        options=["📋 Monthly Summary", "💰 Cash Flow", "💡 Spending Review", "🎯 Goal Tracking","📊 Wellness Score"],
+        options = [
+            "📋 Monthly Summary",
+            "💰 Cash Flow",
+            "💡 Spending Review",
+            "🎯 Goal Tracking",
+            "📊 Coordinator Decision",
+            "✅ Discipline Tracker",
+            "🧠 Behavior Tracker",
+            "🌱 Karma Tracker",
+            "🧑‍🏫 Mentor Advice",
+            "📈 Financial Strategy"
+        ],
         index=0
     )
     st.markdown("---")
     st.caption("ℹ️ Run a new simulation to update all reports")
 
-# Collecting user profile details
+# *************************************************Collecting user profile details*****************************************************
 with st.form("user_profile_form"):
     st.subheader("👤 Basic User Profile")
 
@@ -45,13 +57,11 @@ with st.form("user_profile_form"):
         income_level = st.selectbox("Monthly Income Level (₹)", ["<10,000", "10,000–30,000", "30,000–70,000", "70,000+"])
         opening_balance = st.number_input("Starting Bank Balance (₹)", min_value=0)
 
-        simulation_unit = st.radio("Choose simulation unit:", ["Days", "Months"], horizontal=True)
-        if simulation_unit == "Days":
-            simulation_steps = st.slider("Simulate how many days?", min_value=1, max_value=31, value=7)
+        simulation_unit = st.radio("Choose simulation unit:", ["Months", "Days"], horizontal=True)
+        if simulation_unit == "Months":
+            simulation_steps = st.slider("Simulate how many Months?", min_value=1, max_value=12, value=3)
         else:
-            simulation_steps = st.slider("Simulate how many months?", min_value=1, max_value=12, value=3)
-    
-    financial_goal = st.text_input("What's your financial goal? (e.g., 'Save ₹50,000 for emergency fund')")
+            simulation_steps = st.slider("Simulate how many days?", min_value=1, max_value=31, value=3)
 
     st.markdown("---")
     st.subheader("💰 Income Sources")
@@ -61,25 +71,29 @@ with st.form("user_profile_form"):
         num_income_sources = st.number_input("Number of income sources", min_value=1, max_value=10, value=1)
 
     income_sources = {}
+    total_amount_earning = 0
     for i in range(num_income_sources):
         with st.expander(f"Income Source {i+1}"):
             col1, col2 = st.columns(2)
             with col1:
                 source = st.text_input(f"Source {i+1} Name", key=f"inc_name_{i}")
             with col2:
-                amount = st.number_input(f"Amount (₹)", min_value=0.0, format="%.2f", key=f"inc_amt_{i}")
-            if source:
+                amount = st.number_input(f"Amount Per Month(₹)", min_value=0.0, format="%.2f", key=f"inc_amt_{i}")
+            if source and amount > 0:
                 income_sources[source] = amount
+                total_amount_earning += amount
 
     st.markdown("---")
-    st.subheader("💸 Expense Categories")
+    st.subheader("💸 Monthly Expense Categories")
 
     exp_col1, exp_col2 = st.columns(2)
     default_expenses = ["Rent", "Food", "Entertainment"]
     expenses = {}
+    total_expenses = 0
     for i, category in enumerate(default_expenses):
         with (exp_col1 if i % 2 == 0 else exp_col2):
             expenses[category] = st.number_input(f"{category} (₹)", min_value=0.0, format="%.2f", key=f"exp_{category}")
+            total_expenses += expenses[category]
 
     st.subheader("➕ Custom Expense Categories")
     custom_col1, custom_col2 = st.columns(2)
@@ -95,286 +109,21 @@ with st.form("user_profile_form"):
                 custom_amount = st.number_input(f"Amount (₹)", min_value=0.0, format="%.2f", key=f"custom_exp_amt_{i}")
             if custom_name:
                 expenses[custom_name] = custom_amount
+                total_expenses += expenses[custom_name]
 
+    st.markdown("---")
+    st.subheader("💰 Savings Goals")
+
+    savings_target = st.number_input("Monthly Savings Target (₹)", min_value=0, value=5000)
+    percentage_of_my_savings = st.slider("Savings Percentage of Income (%)", min_value=0, max_value=100, value=33)
+    financial_goal = st.text_input("What's your financial goal? (e.g., 'Save ₹50,000 for emergency fund')")
+
+    st.markdown("---")
     submit = st.form_submit_button("💡 Run Financial Simulation")
 
-def run_simulation_with_retries(inputs, max_attempts=3):
-    for attempt in range(max_attempts):
-        try:
-            result = FinancialCrew().crew().kickoff(inputs=inputs)
-            return result
-        except RateLimitError:
-            st.warning(f"Rate limit hit. Retrying in 10 seconds... (Attempt {attempt + 1}/{max_attempts})")
-            time.sleep(10)
-        except Exception as e:
-            st.error(f"An unexpected error occurred: {e}")
-            break
-    return None
-
-def display_cash_flow():
-    try:
-        cashflow_path = "output/simulated_cashflow.json"
-        if os.path.exists(cashflow_path):
-            with open(cashflow_path, "r") as f:
-                cashflow_data = json.load(f)
-            
-            st.subheader("💰 Daily Cash Flow Simulation")
-            
-            # Calculate summary metrics
-            total_inflows = sum(sum(day["inflows"].values()) for day in cashflow_data)
-            total_outflows = sum(sum(day["outflows"].values()) for day in cashflow_data)
-            net_savings = total_inflows - total_outflows
-            
-            # Display summary metrics
-            col1, col2, col3 = st.columns(3)
-            col1.metric("Total Inflows", f"₹{total_inflows:,.2f}")
-            col2.metric("Total Outflows", f"₹{total_outflows:,.2f}")
-            col3.metric("Net Savings", f"₹{net_savings:,.2f}")
-            
-            # Display transactions in an expandable table
-            with st.expander("📅 View Detailed Transactions"):
-                # Convert to DataFrame for better display
-                df = pd.DataFrame([{
-                    "Date": day["date"],
-                    "Inflows": sum(day["inflows"].values()),
-                    "Outflows": sum(day["outflows"].values()),
-                    "Balance": day["balance"],
-                    "Notes": ", ".join([f"{k}: ₹{v}" for k, v in {**day["inflows"], **day["outflows"]}.items()])
-                } for day in cashflow_data])
-                
-                st.dataframe(df.style.format({
-                    "Inflows": "₹{:.2f}",
-                    "Outflows": "₹{:.2f}",
-                    "Balance": "₹{:.2f}"
-                }))
-
-            st.markdown("---")
-            st.subheader("📈 Balance Over Time")
-            st.line_chart(df.set_index("Date")["Balance"])
-            # Display spending distribution
-            st.subheader("📊 Spending Distribution")
-            
-            # Aggregate spending categories
-            spending = {}
-            for day in cashflow_data:
-                for category, amount in day["outflows"].items():
-                    spending[category] = spending.get(category, 0) + amount
-            
-            if spending:
-                spending_df = pd.DataFrame({
-                    "Category": list(spending.keys()),
-                    "Amount": list(spending.values())
-                }).sort_values("Amount", ascending=False)
-                
-                col1, col2 = st.columns(2)
-                with col1:
-                    st.bar_chart(spending_df.set_index("Category"))
-                with col2:
-                    st.dataframe(spending_df.style.format({"Amount": "₹{:.2f}"}))
-            
-            # Display notable events (days with notes)
-            notable_days = [day for day in cashflow_data if "note" in day]
-            if notable_days:
-                st.subheader("🌟 Notable Events")
-                for day in notable_days:
-                    st.markdown(f"**{day['date']}**: {day['note']}")
-            
-        else:
-            st.warning("Cash flow data not found. Please run the simulation first.")
-            
-    except json.JSONDecodeError:
-        st.error("Error: The cash flow file contains invalid JSON data.")
-    except KeyError as e:
-        st.error(f"Error: Missing expected data field - {str(e)}")
-    except Exception as e:
-        st.error(f"An unexpected error occurred: {str(e)}")
-
-def display_spending_review():
-    try:
-        review_path = "output/spending_review.md"
-        if os.path.exists(review_path):
-            with open(review_path, "r") as f:
-                review_content = f.read()
-            st.subheader("💡 Spending Review & Suggestions")
-            st.markdown(review_content)
-        else:
-            st.warning("Spending review not found. Please run the simulation first.")
-    except Exception as e:
-        st.error(f"Error reading spending review data: {e}")
-
-def display_goal_tracking():
-    try:
-        goal_path = "output/goal_tracking.md"
-        if os.path.exists(goal_path):
-            with open(goal_path, "r") as f:
-                goal_content = f.read()
-            st.subheader("🎯 Goal Progress Tracking")
-            st.markdown(goal_content)
-            
-            # Add visual progress indicator if available in the content
-            if "Achieved:" in goal_content:
-                try:
-                    progress_text = goal_content.split("Achieved:")[1].split("%")[0].strip()
-                    progress = float(progress_text) / 100
-                    st.progress(progress)
-                except:
-                    pass
-        else:
-            st.warning("Goal tracking data not found. Please run the simulation first.")
-    except Exception as e:
-        st.error(f"Error reading goal tracking data: {e}")
-
-def display_monthly_summary():
-    try:
-        report_path = "output/report.md"
-        if os.path.exists(report_path):
-            with open(report_path, "r") as f:
-                report_content = f.read()
-            st.subheader("📋 Monthly Financial Summary")
-            st.markdown(report_content)
-        else:
-            st.warning("Monthly summary not found. Please run the simulation first.")
-    except Exception as e:
-        st.error(f"Error reading monthly summary data: {e}")
-
-def calculate_wellness_score(cashflow_data, goal_data):
-    """Calculate a comprehensive financial wellness score"""
-    try:
-        # Extract key metrics
-        total_inflows = sum(sum(day["inflows"].values()) for day in cashflow_data)
-        total_outflows = sum(sum(day["outflows"].values()) for day in cashflow_data)
-        savings_rate = (total_inflows - total_outflows) / total_inflows if total_inflows > 0 else 0
-        
-        # Count impulse spending occurrences
-        impulse_spends = sum(1 for day in cashflow_data if "impulse_spending" in day["outflows"])
-        
-        # Goal progress (extract from goal tracking or calculate)
-        goal_percent = 0
-        if "Achieved:" in goal_data:
-            try:
-                goal_text = goal_data.split("Achieved:")[1].split("%")[0].strip()
-                goal_percent = float(goal_text) / 100
-            except:
-                pass
-        
-        
-        # Calculate score components (0-100 scale)
-        savings_score = min(100, savings_rate * 200)  # 50% savings rate = 100 score
-        impulse_score = max(0, 100 - (impulse_spends * 5))  # -5 points per impulse spend
-        goal_score = goal_percent * 100
-        consistency_score = 80  
-        
-        wellness_score = (
-            0.3 * savings_score +
-            0.25 * impulse_score +
-            0.3 * goal_score +
-            0.15 * consistency_score
-        )
-        
-        return {
-            "wellness_score": round(wellness_score),
-            "savings_rate": round(savings_rate * 100, 1),
-            "impulse_spends": impulse_spends,
-            "goal_progress": round(goal_percent * 100, 1),
-            "categories": {
-                "Savings": savings_score,
-                "Discipline": impulse_score,
-                "Goals": goal_score,
-                "Consistency": consistency_score
-            }
-        }
-    except Exception as e:
-        st.error(f"Error calculating wellness score: {str(e)}")
-        return None
-
-def display_wellness_score():
-    try:
-        # Load required data
-        cashflow_path = "output/simulated_cashflow.json"
-        goal_path = "output/goal_tracking.md"
-        
-        if not os.path.exists(cashflow_path) or not os.path.exists(goal_path):
-            st.warning("Please run the simulation first to generate wellness metrics")
-            return
-            
-        with open(cashflow_path, "r") as f:
-            cashflow_data = json.load(f)
-            
-        with open(goal_path, "r") as f:
-            goal_data = f.read()
-        
-        # Calculate score
-        wellness = calculate_wellness_score(cashflow_data, goal_data)
-        if not wellness:
-            return
-            
-        st.subheader("📊 Financial Wellness Score")
-        
-        # Main score display
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Overall Score", f"{wellness['wellness_score']}/100", 
-                   delta=f"{'Excellent' if wellness['wellness_score'] >= 80 else 'Good' if wellness['wellness_score'] >= 60 else 'Needs Improvement'}")
-        col2.metric("Savings Rate", f"{wellness['savings_rate']}%")
-        col3.metric("Impulse Spends", wellness['impulse_spends'], 
-                   delta=f"{'Low' if wellness['impulse_spends'] <= 3 else 'High'}")
-        
-        # Score breakdown
-        st.subheader("Score Breakdown")
-        categories = wellness['categories']
-        df = pd.DataFrame({
-            "Category": categories.keys(),
-            "Score": categories.values()
-        })
-        st.bar_chart(df.set_index("Category"))
-        
-        # Recommendations based on score
-        st.subheader("Recommendations")
-        if wellness['wellness_score'] >= 80:
-            st.success("""
-            🎉 Excellent financial health! Keep up these habits:
-            - Continue your savings discipline
-            - Consider investment opportunities
-            - Share your strategies with others
-            """)
-        elif wellness['wellness_score'] >= 60:
-            st.info("""
-            👍 Good progress! Areas to improve:
-            - Review discretionary spending
-            - Increase savings rate by 5%
-            - Track progress weekly
-            """)
-        else:
-            st.warning("""
-            ⚠️ Needs improvement. Focus on:
-            - Creating a strict budget
-            - Reducing impulse purchases
-            - Setting smaller milestone goals
-            """)
-            
-    except Exception as e:
-        st.error(f"Error displaying wellness score: {str(e)}")
-
+# ***************************************************Running my Crew workflow**********************************************************
 if submit:
     with st.spinner("🔍 Simulating your financial journey..."):
-        cashflow_path = "output/simulated_cashflow.json"
-        if os.path.exists(cashflow_path):
-            with open(cashflow_path, "r") as f:
-                cashflow_data = json.load(f)
-            
-            time_to_goal_left = cashflow_data[-1].get("time_to_goal_left", len(cashflow_data) - 1)
-
-            starting_balance = cashflow_data[0]["balance"] - sum(cashflow_data[0]["inflows"].values()) + sum(cashflow_data[0]["outflows"].values())
-            ending_balance = cashflow_data[-1]["balance"]
-            net_savings = ending_balance - starting_balance
-            savings_percentage = (net_savings / starting_balance) * 100
-
-            eco_env = EconomicContext()
-
-            for step in range(5):  # 30 days or months
-                eco_env.simulate_step()
-                context = eco_env.get_context()
-            economic_context = context
-
         user_inputs = {
             'user_name': user_name,
             'age': age,
@@ -382,16 +131,21 @@ if submit:
             'income_level': income_level,
             'goal': financial_goal,
             'starting_balance': opening_balance,
+            'simulation_unit': simulation_unit,
             'simulation_steps': simulation_steps,
-            'ending_balance': ending_balance,
-            'net_savings': net_savings,
-            'savings_percentage': savings_percentage,
-            'time_to_goal_left': time_to_goal_left,
-            'economic_context': economic_context
+            'monthly_earning': total_amount_earning,
+            'savings_target': savings_target,
+            'percentage_of_my_savings': percentage_of_my_savings,
+            'monthly_expenses': total_expenses,
         }
-
-        os.makedirs("output", exist_ok=True)
-        result = run_simulation_with_retries(inputs=user_inputs)
+        custom_agents = {
+            'spending_advisor': {'goal': 'Save more money this month'},
+            'goal_tracker': {'goal': 'Increase savings target by 20%'}
+        }
+        custom_tasks = {
+            'simulate_cash_flow': {'expected_output': 'Custom output for this run'}
+        }
+        result = simulate_timeline(simulation_steps, simulation_unit ,user_inputs)
 
         if result:
             st.success("✅ Simulation Complete!")
@@ -399,19 +153,33 @@ if submit:
         else:
             st.error("Simulation failed after multiple attempts.")
 
-# Display the selected content based on navigation
-if display_option == "📋 Monthly Summary":
-    display_monthly_summary()
-elif display_option == "💰 Cash Flow":
-    display_cash_flow()
-elif display_option == "💡 Spending Review":
-    display_spending_review()
-elif display_option == "🎯 Goal Tracking":
-    display_goal_tracking()
-elif display_option == "📊 Wellness Score":
-    display_wellness_score()
+# **********************************************Display the selected content based on navigation********************************************
+sim_number = st.sidebar.selectbox(
+    "Choose Simulation", 
+    list(range(1, simulation_steps + 1))
+)
 
-# Add footer
+if display_option == "📋 Monthly Summary":
+    display_monthly_summary(sim_number)
+elif display_option == "💰 Cash Flow":
+    display_cash_flow(sim_number)
+elif display_option == "💡 Spending Review":
+    display_spending_review(sim_number)
+elif display_option == "🎯 Goal Tracking":
+    display_goal_tracking(sim_number)
+elif display_option == "📊 Coordinator Decision":
+    display_coordinator_decision(sim_number)
+elif display_option == "✅ Discipline Tracker":
+    display_discipline_tracker(sim_number)
+elif display_option == "🧠 Behavior Tracker":
+    display_behavior_tracker(sim_number)
+elif display_option == "🌱 Karma Tracker":
+    display_karma_tracker(sim_number)
+elif display_option == "🧑‍🏫 Mentor Advice":
+    display_mentor_advice(sim_number)
+elif display_option == "📈 Financial Strategy":
+    display_financial_strategy(sim_number)
+
 st.markdown("---")
 st.caption("""
 ℹ️ This is a simulation tool. Actual financial results may vary based on real-world circumstances.

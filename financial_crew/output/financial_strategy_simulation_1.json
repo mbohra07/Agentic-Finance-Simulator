@@ -1,0 +1,10 @@
+{
+    "financial_allocation_plan": {
+        "debt_rep_payment_pct": 0.0,
+        "debt_rep_payment_amount": 0.0,
+        "investment_pct": 0.23,
+        "investment_amount": 1840.0,
+        "emergency_fund_pct": 0.1,
+        "emergency_fund_amount": 800.0
+    }
+}

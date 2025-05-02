@@ -1,0 +1,1 @@
+"{\n  \"financial_allocation_plan\": \n  {\n    \"debt_rep_payment_pct\": 0.15,\n    \"debt_rep_payment_amount\": 1200.0,\n    \"investment_pct\": 0.30,\n    \"investment_amount\": 2400.0,\n    \"emergency_fund_pct\": 0.20,\n    \"emergency_fund_amount\": 1600.0\n}"

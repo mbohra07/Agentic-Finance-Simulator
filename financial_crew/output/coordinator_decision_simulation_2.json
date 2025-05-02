@@ -1,0 +1,14 @@
+[
+    {
+        "final_action": "Increase monthly savings allocation to ₹2,333.33 to stay on track to reach the goal of saving ₹30,000 in 6 months.",
+        "rationale": "Based on the previous summary, the current goal progress is 33.33% with projected savings of ₹15,000. To reach the goal, the user needs to increase their monthly savings allocation to ₹2,333.33. This will help the user stay on track and mitigate the impact of inflation and other external factors.",
+        "emotional_behavior": "The user should be aware of their impulsiveness score of 0.5, which may lead to overspending. The user should practice discipline and stick to their monthly budget to avoid derailing from their goal.",
+        "summary_of_spending": "Net savings of ₹1,000 in the previous month. The user needs to increase their savings allocation to reach their goal.",
+        "summary_of_goals": "The user's goal is to save ₹30,000 in 6 months. The current progress is 33.33%, and the user needs to save ₹2,333.33 to stay on track.",
+        "List of recommendations": [
+            "Reduce unnecessary expenses to free up more savings",
+            "Consider increasing through part-time work",
+            "Monitor and adjust spending habits to stay on track"
+        ]
+    }
+]

@@ -1,0 +1,119 @@
+[
+  {
+    "month_index": 1,
+    "cashflow": [
+      {
+        "date": "2023-01",
+        "time_to_goal_left": 5,
+        "inflows": {
+          "salary": 8000.0,
+          "freelance": 0,
+          "investment_return": 0,
+          "unexpected_income": 0
+        },
+        "outflows": {
+          "rent": 3000.0,
+          "groceries": 2000.0,
+          "transport": 500.0,
+          "entertainment": 500.0,
+          "impulse_spending": 1000.0,
+          "medical": 0,
+          "guilt_spending": 0,
+          "retail_therapy": 0
+        },
+        "balance": 11000.0,
+        "User": "Madhuram Bohra"
+      },
+      {
+        "date": "2023-02",
+        "time_to_goal_left": 4,
+        "inflows": {
+          "salary": 8000.0,
+          "freelance": 0,
+          "investment_return": 0,
+          "unexpected_income": 1000.0
+        },
+        "outflows": {
+          "rent": 2800.0,
+          "groceries": 1800.0,
+          "transport": 450.0,
+          "entertainment": 400.0,
+          "impulse_spending": 500.0,
+          "medical": 200.0,
+          "guilt_spending": 200.0,
+          "retail_therapy": 0
+        },
+        "balance": 12419.35,
+        "User": "Madhuram Bohra"
+      }
+    ],
+    "spending": "Not Available",
+    "goals": "[\n    {\n        \"user_name\": \"Madhuram Bohra\",\n        \"goal\": \"Save 30,000 in 6 months\",\n        \"achieved_percentage\": 33.33,\n        \"projected_amount\": 20000.0,\n        \"time_left\": \"4 months\",\n        \"economic_adjustments_tip\": \"Adjust your monthly expenses by \u20b9700 as inflation is rising by 4.99% and cost of living index is decreasing by -0.91%. Consider investing in a high-yield savings account with an interest rate of 70.74% to maximize your savings.\"\n    }\n]",
+    "Financial_strategy": "{\n    \"financial_allocation_plan\": {\n        \"debt_rep_payment_pct\": 0.0,\n        \"debt_rep_payment_amount\": 0.0,\n        \"investment_pct\": 0.23,\n        \"investment_amount\": 1840.0,\n        \"emergency_fund_pct\": 0.1,\n        \"emergency_fund_amount\": 800.0\n    }\n}",
+    "coordinator decision": [
+      {
+        "final_action": "Reduce monthly expenses by \u20b91,000 to ensure savings target is met.",
+        "rationale": "Based on the user's income, expenses, and savings target, it is crucial to reduce monthly expenses to ensure the target is achievable.",
+        "emotional_behavior": "Cautious, with a focus on saving",
+        "summary_of_spending": "Monthly expenses: \u20b97,000; Categories: No data available.",
+        "summary_of_goals": "Save \u20b930,000 in 6 months; Monthly savings target: \u20b95,000",
+        "List of recommendations": [
+          "Reduce monthly expenses by \u20b91,000 to ensure savings target is met.",
+          "Create a budget to track and categorize expenses.",
+          "Consider exploring ways to increase income to support savings goals."
+        ]
+      }
+    ],
+    "discipline tracker": [
+      {
+        "character_profile": {
+          "discipline": 65,
+          "greed": 35,
+          "awareness": 60,
+          "resilience": 70
+        },
+        "updated_at": "2023-02-20T07:30:00.000Z"
+      }
+    ],
+    "behaviour tracker": "[\n  {\n    \"user_id\": 1,\n    \"user_name\": \"Madhuram Bohra\",\n    \"month\": 1,\n    \"spending\": 7000.0,\n    \"saving\": 1000.0,\n    \"goal_achieved\": false,\n    \"behavior_pattern\": \"Occasional Spender\",\n    \"historical_log\": [\n      {\n        \"month\": \"2023-01\",\n        \"spending\": 7000.0,\n        \"saving\": 1000.0,\n      {\n        \"month\": \"2023-02\",\n        \"spending\": 7000.0,\n        \"saving\": 1000.0,\n        \"goal_achieved\": false\n      }\n    ]\n  }\n]",
+    "karma tracker": [
+      {
+        "date": 1,
+        "action": "Started with an initial balance of 10000",
+        "trait_type": "sattvic",
+        "karmic_score": 10,
+        "symbolic_reason": "displaying financial awareness and responsibility"
+      },
+      {
+        "date": 1,
+        "action": "Set a savings goal of 5000",
+        "trait_type": "sattvic",
+        "karmic_score": 15,
+        "symbolic_reason": "exhibiting discipline and commitment to savings"
+      },
+      {
+        "date": 1,
+        "action": "Allocated 33% of income towards savings",
+        "trait_type": "sattvic",
+        "karmic_score": 12,
+        "symbolic_reason": "practicing mindful allocation of resources"
+      },
+      {
+        "date": 1,
+        "action": "Incurred monthly expenses of 7000",
+        "trait_type": "tamasic",
+        "karmic_score": -5,
+        "symbolic_reason": "indicating potential for overspending and lack of cost control"
+      }
+    ],
+    "mentor advice": [
+      {
+        "message": "The lotus blooms untouched by the mud \u2014 so too must your wealth blossom amidst life\u2019s trials.",
+        "insight": "You've shown the willingness to take the first step, though your path is still uncertain and marked by moments of self-doubt.",
+        "suggestion": "Let the seeds of your savings take root, and nurture them with discipline and clarity.",
+        "karmic_reflection": "Your karmic path reveals a gentle sattvic ascent \u2014 like a dawn slowly dispelling the shadows. Continue nurturing clarity and balance, for it shapes both spirit and sustenance."
+      }
+    ],
+    "monthly_summary": "[\n  {\n    \"overview\": {\n      \"cash_flow_summary\": {\n        \"total_income\": 8000.0,\n        \"total_expenses\": 7000.0,\n        \"net_savings\": 1000.0,\n        \"net_cash_flow\": 1000.0\n      },\n      \"spending_behavior_and_emotional_patterns\": {\n        \"impulsiveness_score\": 60,\n        \"discipline_score\": 40,\n        \"emotional_triggers\": \"You tend to splurge when under pressure.\",\n        \"observed_spending_patterns\": \"You prioritize spending on essential items first.\"\n      },\n      \"goal_progress\": {\n        \"goal\": \"Save 30,000 in 6 months\",\n        \"progress_percent\": 33.33,\n        \"projected_savings\": 15000.0,\n        \"time_to_goal\": 5\n      }\n    },\n    \"recommendations\": {\n      \"coordinator_recommendation\": \"Adjust your spending habits to prioritize savings.\",\n      \"suggestions_for_next_month\": [\"Increase income by  }\n  }\n]"
+  }
+]

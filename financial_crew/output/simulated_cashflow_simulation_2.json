@@ -1,0 +1,45 @@
+[
+    {
+        "date": "2023-02-28",
+        "time_to_goal_left": 3,
+        "inflows": {
+            "salary": 8000.0,
+            "freelance": 0.0,
+            "investment_return": 54.86,
+            "unexpected_income": 0.0
+        },
+        "outflows": {
+            "rent": 3000.0,
+            "groceries": 2000.0,
+            "transport": 500.0,
+            "entertainment": 1000.0,
+            "impulse_spending": 400.0,
+            "medical": 0.0,
+            "guilt_spending": 0.0,
+            "retail_therapy": 0.0
+        },
+        "balance": 2535.86,
+        "User": "Madhuram Bohra"
+    },
+    {
+        "date": "2023-03-31",
+        "time_to_goal_left": 2,
+        "inflows": {
+            "freelance": 0.0,
+            "investment_return": 55.17,
+            "unexpected_income": 1000.0
+        },
+        "outflows": {
+            "rent": 3000.0,
+            "groceries": 2000.0,
+            "transport": 500.0,
+            "entertainment": 800.0,
+            "impulse_spending": 300.0,
+            "medical": 0.0,
+            "guilt_spending": 0.0,
+            "retail_therapy": 0.0
+        },
+        "balance": 4235.03,
+        "User": "Madhuram Bohra"
+    }
+]

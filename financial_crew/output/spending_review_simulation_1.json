@@ -1,0 +1,40 @@
+[
+    {
+        "user_name": "Madhuram Bohra",
+        "occupation": "Student",
+        "income": "₹8000",
+        "goal": "Save 30,000 in 6 months",
+        "savings_target": "₹5000",
+        "savings_rate": "33%",
+        "top_wasteful_expenses": [
+            {
+                "category": "Entertainment",
+                "amount": "₹1500"
+            },
+            {
+                "category": "Clothing",
+                "amount": "₹1000"
+            },
+            {
+                "category": "Dining out",
+                "amount": "₹800"
+            }
+        ],
+        "overspending_categories": [
+            {
+                "category": "Transportation",
+                "benchmark_variance": "+20%"
+            }
+        ],
+        "savings_rate_assessment": {
+            "current_rate": "33%",
+            "suggested_improvement": "+5%",
+            "notes": "Divert ₹1000 from dining out to savings"
+        },
+        "consistency_tips": [
+            "Set a weekly savings target of ₹1250 to achieve the goal.",
+            "Create a separate account for savings to track progress.",
+            "Implement a 50/30/20 allocation rule to prioritize expenses."
+        ]
+    }
+]

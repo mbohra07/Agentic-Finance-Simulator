@@ -1,0 +1,30 @@
+[
+    {
+        "date": 1,
+        "action": "Started with an initial balance of 10000",
+        "trait_type": "sattvic",
+        "karmic_score": 10,
+        "symbolic_reason": "displaying financial awareness and responsibility"
+    },
+    {
+        "date": 1,
+        "action": "Set a savings goal of 5000",
+        "trait_type": "sattvic",
+        "karmic_score": 15,
+        "symbolic_reason": "exhibiting discipline and commitment to savings"
+    },
+    {
+        "date": 1,
+        "action": "Allocated 33% of income towards savings",
+        "trait_type": "sattvic",
+        "karmic_score": 12,
+        "symbolic_reason": "practicing mindful allocation of resources"
+    },
+    {
+        "date": 1,
+        "action": "Incurred monthly expenses of 7000",
+        "trait_type": "tamasic",
+        "karmic_score": -5,
+        "symbolic_reason": "indicating potential for overspending and lack of cost control"
+    }
+]
